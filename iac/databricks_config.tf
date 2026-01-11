@@ -34,5 +34,5 @@ resource "databricks_cluster" "single_node" {
 resource "databricks_notebook" "etl" {
   path     = "/Users/${data.databricks_current_user.me.user_name}/etl_pipeline"
   language = "PYTHON"
-  source   = "../notebooks/etl_pipeline.py" # Upewnij się, że masz ten plik!
+  source   = "../data_generator/etl_pipeline.py" # Upewnij się, że masz ten plik!
 }
