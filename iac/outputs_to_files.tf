@@ -1,4 +1,3 @@
-
 resource "local_file" "generator_env" {
   content = <<EOT
 EVENT_HUB_CONNECTION_STR=${azurerm_eventhub_namespace.eh_ns.default_primary_connection_string}
