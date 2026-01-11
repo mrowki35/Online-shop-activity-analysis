@@ -29,7 +29,6 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  # KLUCZOWE dla Data Lake: Włącza hierarchiczną strukturę plików
   is_hns_enabled           = true 
 }
 
