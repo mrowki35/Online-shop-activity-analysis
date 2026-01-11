@@ -207,3 +207,5 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 /.idea
+/iac/.terraform
+iac/.terraform.lock.hcl
