@@ -23,6 +23,3 @@ provider "azurerm" {
   features {}
 }
 
-provider "databricks" {
-  host = azurerm_databricks_workspace.db.workspace_url
-}

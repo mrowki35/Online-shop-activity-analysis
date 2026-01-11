@@ -1,15 +1,16 @@
-data "databricks_current_user" "me" {}
-data "databricks_spark_version" "latest_lts" {
-  long_term_support = true
+provider "databricks" {
+  host                        = azurerm_databricks_workspace.db.workspace_url
+  azure_workspace_resource_id = azurerm_databricks_workspace.db.id
 }
-data "databricks_node_type" "smallest" {
-  local_disk = true
+locals {
+  spark_v = "13.3.x-scala2.12"
+  node_v  = "Standard_DS3_v2"
 }
 
 resource "databricks_cluster" "single_node" {
   cluster_name            = "Clickstream Cluster"
-  spark_version           = data.databricks_spark_version.latest_lts.id
-  node_type_id            = data.databricks_node_type.smallest.id
+  spark_version           = local.spark_v
+  node_type_id            = local.node_v
   autotermination_minutes = 20
 
   spark_conf = {
@@ -32,7 +33,16 @@ resource "databricks_cluster" "single_node" {
 }
 
 resource "databricks_notebook" "etl" {
-  path     = "/Users/${data.databricks_current_user.me.user_name}/etl_pipeline"
+  path     = "/Shared/etl_pipeline"
   language = "PYTHON"
-  source   = "../data_generator/etl_pipeline.py" # Upewnij się, że masz ten plik!
+  source   = "../data_generator/etl_pipeline.py" 
+  
+  depends_on = [azurerm_databricks_workspace.db]
+}
+
+resource "databricks_library" "eventhubs" {
+  cluster_id = databricks_cluster.single_node.id
+  maven {
+    coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
+  }
 }

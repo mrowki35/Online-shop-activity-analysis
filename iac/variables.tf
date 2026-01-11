@@ -1,6 +1,6 @@
 variable "resource_group_name" {
   description = "Nazwa grupy zasobów"
-  default     = "rg-clickstream-student"
+  default     = "rg-clickstream-student-dev"
 }
 
 variable "location" {
