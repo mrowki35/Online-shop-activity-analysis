@@ -46,3 +46,19 @@ resource "databricks_library" "eventhubs" {
     coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
   }
 }
+
+resource "databricks_notebook" "medallion" {
+  source   = "${path.module}/../data_generator/medallion_pipeline.py"
+  path     = "/Shared/medallion_pipeline"
+  language = "PYTHON"
+  
+  depends_on = [azurerm_databricks_workspace.db]
+}
+
+resource "databricks_notebook" "dashboard" {
+  source   = "${path.module}/../data_generator/dashboard_visualization.py"
+  path     = "/Shared/dashboard_visualization"
+  language = "PYTHON"
+  
+  depends_on = [azurerm_databricks_workspace.db]
+}

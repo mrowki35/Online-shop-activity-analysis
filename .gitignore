@@ -209,3 +209,6 @@ __marimo__/
 /.idea
 /iac/.terraform
 iac/.terraform.lock.hcl
+
+iac/terraform.tfstate
+iac/terraform.tfstate.backup
