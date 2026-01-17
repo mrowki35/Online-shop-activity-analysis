@@ -54,7 +54,7 @@ display(revenue_df)
 conversion_df = (
     df.select(lit("All Sessions").alias("step"), count("*").alias("count"))
     .union(
-        df.filter(col("has_cart_activity") == 1).select(
+        df.filter(col("is_abandoned_cart") == 1).select(
             lit("Cart Activity").alias("step"), count("*").alias("count")
         )
     )
