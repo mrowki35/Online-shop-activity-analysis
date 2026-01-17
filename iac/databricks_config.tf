@@ -28,15 +28,15 @@ resource "databricks_cluster" "single_node" {
     "STORAGE_ACCOUNT_NAME" = azurerm_storage_account.storage.name
     "STORAGE_ACCOUNT_KEY"  = azurerm_storage_account.storage.primary_access_key
   }
-  
+
   depends_on = [azurerm_databricks_workspace.db]
 }
 
 resource "databricks_notebook" "etl" {
   path     = "/Shared/etl_pipeline"
   language = "PYTHON"
-  source   = "../data_generator/etl_pipeline.py" 
-  
+  source   = "../data_generator/etl_pipeline.py"
+
   depends_on = [azurerm_databricks_workspace.db]
 }
 
@@ -51,7 +51,7 @@ resource "databricks_notebook" "medallion" {
   source   = "${path.module}/../data_generator/medallion_pipeline.py"
   path     = "/Shared/medallion_pipeline"
   language = "PYTHON"
-  
+
   depends_on = [azurerm_databricks_workspace.db]
 }
 
@@ -59,6 +59,6 @@ resource "databricks_notebook" "dashboard" {
   source   = "${path.module}/../data_generator/dashboard_visualization.py"
   path     = "/Shared/dashboard_visualization"
   language = "PYTHON"
-  
+
   depends_on = [azurerm_databricks_workspace.db]
 }
