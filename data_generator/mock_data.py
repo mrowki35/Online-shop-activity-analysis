@@ -1,14 +1,15 @@
 import asyncio
 import json
+import os
 import random
 import uuid
 from datetime import datetime, timezone
-from dotenv import load_dotenv
-from azure.eventhub.aio import EventHubProducerClient
-from azure.eventhub import EventData
-import os
 
-load_dotenv() 
+from azure.eventhub import EventData
+from azure.eventhub.aio import EventHubProducerClient
+from dotenv import load_dotenv
+
+load_dotenv()
 CONNECTION_STR = os.getenv("EVENT_HUB_CONNECTION_STR")
 EVENTHUB_NAME = os.getenv("EVENT_HUB_NAME")
 
@@ -22,16 +23,42 @@ EVENT_TYPES = [
     "CHECKOUT_START",
     "ADD_SHIPPING_INFO",
     "ADD_PAYMENT_INFO",
-    "PURCHASE"
+    "PURCHASE",
 ]
 
 PRODUCTS = [
-    {"id": "PROD_001", "name": "Laptop Gamingowy", "price": 4500.00, "category": "Electronics"},
-    {"id": "PROD_002", "name": "Mysz Bezprzewodowa", "price": 120.50, "category": "Accessories"},
-    {"id": "PROD_003", "name": "Monitor 4K", "price": 1200.00, "category": "Electronics"},
-    {"id": "PROD_004", "name": "Klawiatura Mechaniczna", "price": 350.00, "category": "Accessories"},
-    {"id": "PROD_005", "name": "Słuchawki Noise Cancelling", "price": 800.00, "category": "Audio"},
+    {
+        "id": "PROD_001",
+        "name": "Laptop Gamingowy",
+        "price": 4500.00,
+        "category": "Electronics",
+    },
+    {
+        "id": "PROD_002",
+        "name": "Mysz Bezprzewodowa",
+        "price": 120.50,
+        "category": "Accessories",
+    },
+    {
+        "id": "PROD_003",
+        "name": "Monitor 4K",
+        "price": 1200.00,
+        "category": "Electronics",
+    },
+    {
+        "id": "PROD_004",
+        "name": "Klawiatura Mechaniczna",
+        "price": 350.00,
+        "category": "Accessories",
+    },
+    {
+        "id": "PROD_005",
+        "name": "Słuchawki Noise Cancelling",
+        "price": 800.00,
+        "category": "Audio",
+    },
 ]
+
 
 class ClickstreamGenerator:
     def __init__(self):
@@ -43,7 +70,7 @@ class ClickstreamGenerator:
                 "userId": f"user_{random.randint(1000, 9999)}",
                 "sessionId": str(uuid.uuid4()),
                 "deviceType": random.choice(["Mobile", "Desktop", "Tablet"]),
-                "os": random.choice(["Windows", "iOS", "Android", "MacOS"])
+                "os": random.choice(["Windows", "iOS", "Android", "MacOS"]),
             }
             if len(self.active_users) > 20:
                 self.active_users.pop(0)
@@ -65,11 +92,17 @@ class ClickstreamGenerator:
         elif rand_val < 0.8:
             event_type = "ADD_TO_CART"
         elif rand_val < 0.95:
-            event_type = random.choice(["VIEW_CART", "CHECKOUT_START", "ADD_SHIPPING_INFO", "ADD_PAYMENT_INFO"])
+            event_type = random.choice(
+                ["VIEW_CART", "CHECKOUT_START", "ADD_SHIPPING_INFO", "ADD_PAYMENT_INFO"]
+            )
         else:
             event_type = "PURCHASE"
 
-        product = random.choice(PRODUCTS) if event_type not in ["PAGE_VIEW", "SEARCH"] else None
+        product = (
+            random.choice(PRODUCTS)
+            if event_type not in ["PAGE_VIEW", "SEARCH"]
+            else None
+        )
 
         event_body = {
             "eventId": str(uuid.uuid4()),
@@ -80,10 +113,10 @@ class ClickstreamGenerator:
             "device": {
                 "type": user_context["deviceType"],
                 "os": user_context["os"],
-                "ip": f"192.168.{random.randint(0,255)}.{random.randint(0,255)}"
+                "ip": f"192.168.{random.randint(0,255)}.{random.randint(0,255)}",
             },
             "pageUrl": f"https://shop.example.com/{event_type.lower().replace('_','-')}",
-            "data": {}
+            "data": {},
         }
         if product:
             event_body["data"]["productId"] = product["id"]
@@ -92,7 +125,9 @@ class ClickstreamGenerator:
             event_body["data"]["currency"] = "PLN"
 
         if event_type == "SEARCH":
-            event_body["data"]["searchQuery"] = random.choice(["laptop", "mouse", "desktop", "cable"])
+            event_body["data"]["searchQuery"] = random.choice(
+                ["laptop", "mouse", "desktop", "cable"]
+            )
 
         if event_type == "PURCHASE":
             event_body["data"]["orderId"] = f"ORD-{random.randint(10000, 99999)}"
@@ -100,11 +135,11 @@ class ClickstreamGenerator:
 
         return event_body
 
+
 async def run():
     print(f"Start wysyłania zdarzeń do: {EVENTHUB_NAME}")
     producer = EventHubProducerClient.from_connection_string(
-        conn_str=CONNECTION_STR,
-        eventhub_name=EVENTHUB_NAME
+        conn_str=CONNECTION_STR, eventhub_name=EVENTHUB_NAME
     )
 
     generator = ClickstreamGenerator()
@@ -119,11 +154,14 @@ async def run():
                 event_json = json.dumps(event_payload)
                 event_data_batch.add(EventData(event_json))
 
-                print(f"[{event_payload['timestamp']}] {event_payload['eventType']} - User: {event_payload['userId']}")
+                print(
+                    f"[{event_payload['timestamp']}] {event_payload['eventType']} - User: {event_payload['userId']}"
+                )
 
             await producer.send_batch(event_data_batch)
 
             await asyncio.sleep(random.uniform(0.5, 2.0))
+
 
 if __name__ == "__main__":
     try:
