@@ -65,12 +65,8 @@ Once the infrastructure is deployed, execute the pipelines in the Azure Databric
 ## Analytics & Visualization
 To view the results:
 
-- Open the dashboard_visualization notebook in Databricks.
-
-- Run the cells to view key metrics, including:
-
-- Total Sessions & Revenue
-
-- Cart Abandonment Rates
-
-- Top Users by Lifetime Value
+* Open the `dashboard_visualization` notebook in Databricks.
+* Run the cells to view key metrics, including:
+  * Total Sessions & Revenue
+  * Cart Abandonment Rates
+  * Top Users by Lifetime Value
