@@ -36,7 +36,7 @@ terraform apply
 
 Once the infrastructure is ready, start the Python script to send mock clickstream data.
 
-#### 1. Install Dependencies
+- Install Dependencies
 The script requires external libraries to connect to Azure Event Hub and manage environment variables.
 
 ```bash
@@ -44,7 +44,7 @@ The script requires external libraries to connect to Azure Event Hub and manage 
 pip install azure-eventhub python-dotenv
 ```
 
-#### 2. Run the Generator
+- Run the Generator
 
 ```bash
 # Navigate to the data generator directory (relative to the 'iac' folder)
