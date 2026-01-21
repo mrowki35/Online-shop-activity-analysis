@@ -32,6 +32,26 @@ terraform plan
 terraform apply
 ```
 
+### 2. Generate Real-time Data
+
+Once the infrastructure is ready, start the Python script to send mock clickstream data.
+
+#### 1. Install Dependencies
+The script requires external libraries to connect to Azure Event Hub and manage environment variables.
+
+```bash
+# Install required Python packages
+pip install azure-eventhub python-dotenv
+```
+
+#### 2. Run the Generator
+
+```bash
+# Navigate to the data generator directory (relative to the 'iac' folder)
+cd ../data_generator
+
+python mock_data.py
+```
 
 ## Run Data Pipelines
 Once the infrastructure is deployed, execute the pipelines in the Azure Databricks workspace:
@@ -40,9 +60,7 @@ Once the infrastructure is deployed, execute the pipelines in the Azure Databric
 
 - Launch the Databricks Workspace.
 
-- Ingest Data: Locate and open the etl_pipeline notebook. Click Run All to ingest the initial dataset.
-
-- Process Data: Open the medallion_pipeline notebook. Click Run All to process the data through Bronze, Silver, and Gold layers.
+- Process and Ingest Data: Open the medallion_pipeline notebook. Click Run All to process the data through Bronze, Silver, and Gold layers.
 
 ## Analytics & Visualization
 To view the results:
