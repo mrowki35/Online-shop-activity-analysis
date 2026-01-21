@@ -60,7 +60,7 @@ Once the infrastructure is deployed, execute the pipelines in the Azure Databric
 
 - Launch the Databricks Workspace.
 
-- Process and Ingest Data: Open the medallion_pipeline notebook. Click Run All to process the data through Bronze, Silver, and Gold layers.
+- Ingest and Process Data: Open the medallion_pipeline notebook. Click Run All to ingest and process the data through Bronze, Silver, and Gold layers.
 
 ## Analytics & Visualization
 To view the results:
