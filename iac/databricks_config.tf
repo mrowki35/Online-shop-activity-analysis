@@ -32,14 +32,6 @@ resource "databricks_cluster" "single_node" {
   depends_on = [azurerm_databricks_workspace.db]
 }
 
-resource "databricks_notebook" "etl" {
-  path     = "/Shared/etl_pipeline"
-  language = "PYTHON"
-  source   = "../data_generator/etl_pipeline.py"
-
-  depends_on = [azurerm_databricks_workspace.db]
-}
-
 resource "databricks_library" "eventhubs" {
   cluster_id = databricks_cluster.single_node.id
   maven {
