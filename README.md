@@ -70,3 +70,9 @@ To view the results:
   * Total Sessions & Revenue
   * Cart Abandonment Rates
   * Top Users by Lifetime Value
+
+## Clean up resources
+
+```bash
+terraform destroy
+```
