@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install flake8 black
+          # Opcjonalnie: pip install -r requirements.txt jeśli go stworzysz
+
+      - name: Lint Python Code
+        run: |
+          # Sprawdzenie błędów składniowych w generatorze i notebookach
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Check
+        run: |
+          cd iac
+          terraform init -backend=false
+          terraform validate
+          terraform fmt -check
+
+  deploy-artifacts:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Notebooks
+        run: |
+          echo "Walidacja ścieżek artefaktów..."
+          test -f data_generator/medallion_pipeline.py
+          test -f data_generator/dashboard_visualization.py
+          echo "Artefakty gotowe do publikacji w Databricks."
