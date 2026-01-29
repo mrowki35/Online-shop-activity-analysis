@@ -53,7 +53,7 @@ locals {
 resource "azurerm_consumption_budget_resource_group" "budget" {
   name              = "Budget-${azurerm_resource_group.rg.name}"
   resource_group_id = azurerm_resource_group.rg.id
-  amount            = 50 
+  amount            = 50
   time_grain        = "Monthly"
 
   time_period {
@@ -66,7 +66,7 @@ resource "azurerm_consumption_budget_resource_group" "budget" {
     threshold      = 10.0
     operator       = "GreaterThan"
     threshold_type = "Actual"
-    contact_emails = [var.alert_email] 
+    contact_emails = [var.alert_email]
   }
 
   # Alert 50% 
