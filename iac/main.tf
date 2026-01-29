@@ -45,3 +45,49 @@ resource "azurerm_databricks_workspace" "db" {
   location            = azurerm_resource_group.rg.location
   sku                 = "standard"
 }
+
+locals {
+  current_month_start = "${formatdate("YYYY-MM", timestamp())}-01T00:00:00Z"
+}
+
+resource "azurerm_consumption_budget_resource_group" "budget" {
+  name              = "Budget-${azurerm_resource_group.rg.name}"
+  resource_group_id = azurerm_resource_group.rg.id
+  amount            = 50 
+  time_grain        = "Monthly"
+
+  time_period {
+    start_date = local.current_month_start
+  }
+
+  # Alert 10% 
+  notification {
+    enabled        = true
+    threshold      = 10.0
+    operator       = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = [var.alert_email] 
+  }
+
+  # Alert 50% 
+  notification {
+    enabled        = true
+    threshold      = 50.0
+    operator       = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = [var.alert_email]
+  }
+
+  # Alert 75% 
+  notification {
+    enabled        = true
+    threshold      = 75.0
+    operator       = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = [var.alert_email]
+  }
+
+  lifecycle {
+    ignore_changes = [time_period[0].start_date]
+  }
+}
